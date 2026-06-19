@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { WIDTH, HEIGHT, SPEED, SPEED as _, TARGET_RADIUS, DOT_RADIUS } from "../lib/constants";
+import { WIDTH, HEIGHT, SPEED, TARGET_RADIUS, DOT_RADIUS } from "../lib/constants";
 
 export function useCanvas(canvasRef, population, obstacles, target, frameRef) {
   const draw = useCallback(() => {
