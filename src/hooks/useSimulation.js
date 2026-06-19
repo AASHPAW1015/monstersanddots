@@ -32,9 +32,10 @@ export function useSimulation(canvasRef) {
   const { draw, step } = useCanvas(canvasRef, population, obstacles, target, frameRef);
   const { runGeneration } = useEvolution();
 
-  // BUG-004: endGeneration does NOT sync mirrors before dispatch
   const endGeneration = useCallback(() => {
     const result = runGeneration(populationRef.current, historyRef.current);
+    populationRef.current = result.population;
+    historyRef.current = result.stats.history;
     dispatch({ type: "NEXT_GENERATION", ...result });
     frameRef.current = 0;
     genStartRef.current = null;
