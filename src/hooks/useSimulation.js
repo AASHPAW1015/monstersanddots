@@ -21,11 +21,13 @@ export function useSimulation(canvasRef) {
   const frameRef = useRef(0);
   const genStartRef = useRef(null);
 
-  // BUG-002: ref mirrors assigned during render (not inside useEffect)
+  // Always-fresh mirrors so the loop / control handlers read the latest values.
   const populationRef = useRef(population);
   const historyRef = useRef(stats.history);
-  populationRef.current = population;
-  historyRef.current = stats.history;
+  useEffect(() => {
+    populationRef.current = population;
+    historyRef.current = stats.history;
+  });
 
   const { draw, step } = useCanvas(canvasRef, population, obstacles, target, frameRef);
   const { runGeneration } = useEvolution();
