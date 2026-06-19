@@ -15,6 +15,7 @@ export default function SimulationPage() {
         <h1>Genetic Algorithm Simulator</h1>
         <nav>
           <Link to="/">Simulation</Link>
+          <Link to="/path">Path Learning</Link>
           <Link to="/history">History</Link>
         </nav>
       </header>

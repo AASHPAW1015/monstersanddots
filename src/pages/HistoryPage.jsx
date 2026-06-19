@@ -11,6 +11,7 @@ export default function HistoryPage() {
         <h1>Run History</h1>
         <nav>
           <Link to="/">Simulation</Link>
+          <Link to="/path">Path Learning</Link>
           <Link to="/history">History</Link>
         </nav>
       </header>
