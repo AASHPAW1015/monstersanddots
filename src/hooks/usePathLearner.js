@@ -233,6 +233,7 @@ export function usePathLearner(canvasRef) {
     // Done when we touch the target or have clear line-of-sight to it.
     if (chosen.dist < TARGET_RADIUS || clearLine(chosen.E, target, obstacles)) {
       pathRef.current.push({ ...target });
+      setBestDist(0);
       return true;
     }
     return false;
