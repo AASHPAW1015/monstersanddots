@@ -39,6 +39,7 @@ const initialState = {
     maxFitness: 0,
     avgFitness: 0,
     synthTime: 0,
+    reachedCount: 0,
     history: [],
   },
 };
@@ -76,7 +77,7 @@ function reducer(state, action) {
         generation: 0,
         isRunning: false,
         isPaused: false,
-        stats: { maxFitness: 0, avgFitness: 0, synthTime: 0, history: [] },
+        stats: { maxFitness: 0, avgFitness: 0, synthTime: 0, reachedCount: 0, history: [] },
       };
     case "LOAD_FROM_STORAGE":
       return {

@@ -17,31 +17,32 @@ export function useEvolution() {
 
       const maxFitness = population.reduce((m, c) => Math.max(m, c.fitness), 0);
       const avgFitness = calcAvgFitness(population);
+      const reachedCount = population.filter((c) => c.reached).length;
 
-      const next = population.map((_, id) => {
+      const ELITE_N = 10;
+      const sorted = [...population].sort((a, b) => b.fitness - a.fitness);
+      const eliteSlots = sorted.slice(0, ELITE_N).map((c, i) => ({
+        ...c, id: i, x: START.x, y: START.y, vx: 0, vy: 0, fitness: 0, dead: false, reached: false,
+      }));
+
+      const bred = Array.from({ length: population.length - ELITE_N }, (_, i) => {
         const parentA = selectParent(population);
         const parentB = selectParent(population);
         const childDNA = mutate(crossover(parentA.dna, parentB.dna), mutationRate);
         return {
-          id,
-          dna: childDNA,
-          x: START.x,
-          y: START.y,
-          fitness: 0,
-          dead: false,
-          reached: false,
+          id: ELITE_N + i, dna: childDNA, x: START.x, y: START.y,
+          vx: 0, vy: 0, fitness: 0, dead: false, reached: false,
         };
       });
 
+      const next = [...eliteSlots, ...bred];
       const synthTime = performance.now() - t0;
       const gen = history.length + 1;
 
       return {
         population: next,
         stats: {
-          maxFitness,
-          avgFitness,
-          synthTime,
+          maxFitness, avgFitness, synthTime, reachedCount,
           history: [...history, { gen, max: maxFitness, avg: avgFitness }],
         },
       };

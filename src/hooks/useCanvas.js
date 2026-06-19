@@ -1,6 +1,9 @@
 import { useCallback } from "react";
 import { WIDTH, HEIGHT, SPEED, TARGET_RADIUS, DOT_RADIUS } from "../lib/constants";
 
+const ACCEL = SPEED * 0.4;
+const DRAG  = 0.92;
+
 export function useCanvas(canvasRef, population, obstacles, target, frameRef) {
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
@@ -16,10 +19,27 @@ export function useCanvas(canvasRef, population, obstacles, target, frameRef) {
     ctx.arc(target.x, target.y, TARGET_RADIUS, 0, Math.PI * 2);
     ctx.fill();
 
+    let elite = null;
+    let bestFit = -Infinity;
     population.forEach((c) => {
-      ctx.fillStyle = c.reached ? "#22c55e" : c.dead ? "#475569" : "#818cf8";
+      if (!c.dead && !c.reached) {
+        const d = Math.hypot(c.x - target.x, c.y - target.y);
+        if (d < bestFit || elite === null) { elite = c; bestFit = d; }
+      }
+    });
+
+    population.forEach((c) => {
+      const isElite = c === elite;
+      ctx.fillStyle = c.reached
+        ? "#22c55e"
+        : c.dead
+        ? "#475569"
+        : isElite
+        ? "#fbbf24"
+        : "#818cf8";
+      const r = isElite ? DOT_RADIUS + 2 : DOT_RADIUS;
       ctx.beginPath();
-      ctx.arc(c.x, c.y, DOT_RADIUS, 0, Math.PI * 2);
+      ctx.arc(c.x, c.y, r, 0, Math.PI * 2);
       ctx.fill();
     });
   }, [canvasRef, population, obstacles, target]);
@@ -28,10 +48,13 @@ export function useCanvas(canvasRef, population, obstacles, target, frameRef) {
     const frame = frameRef.current;
     population.forEach((c) => {
       if (c.dead || c.reached) return;
-      const move = c.dna[frame];
-      if (!move) return;
-      c.x += move.x * SPEED;
-      c.y += move.y * SPEED;
+      const gene = c.dna[frame];
+      if (!gene) return;
+
+      c.vx = (c.vx ?? 0) * DRAG + gene.x * ACCEL;
+      c.vy = (c.vy ?? 0) * DRAG + gene.y * ACCEL;
+      c.x += c.vx;
+      c.y += c.vy;
 
       if (c.x < 0 || c.x > WIDTH || c.y < 0 || c.y > HEIGHT) c.dead = true;
 
@@ -39,8 +62,7 @@ export function useCanvas(canvasRef, population, obstacles, target, frameRef) {
         if (c.x > o.x && c.x < o.x + o.w && c.y > o.y && c.y < o.y + o.h) c.dead = true;
       });
 
-      const d = Math.hypot(c.x - target.x, c.y - target.y);
-      if (d < TARGET_RADIUS) c.reached = true;
+      if (Math.hypot(c.x - target.x, c.y - target.y) < TARGET_RADIUS) c.reached = true;
     });
   }, [population, obstacles, target, frameRef]);
 

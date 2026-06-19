@@ -25,6 +25,11 @@ export function EvolutionStats({ stats, generation }) {
         <Stat label="Average Generation Fitness" value={stats.avgFitness.toFixed(4)} />
         <Stat label="Total Elapsed Generations" value={generation} />
         <Stat label="Matrix Synthesis Time" value={`${stats.synthTime.toFixed(2)} ms`} />
+        <Stat
+          label="Reached Target"
+          value={`${stats.reachedCount ?? 0} / ${population.length}`}
+          highlight={stats.reachedCount > 0}
+        />
       </div>
       <div className="action-strip">
         <button onClick={exportEliteDNA}>Export Elite DNA</button>
@@ -37,11 +42,13 @@ export function EvolutionStats({ stats, generation }) {
   );
 }
 
-function Stat({ label, value }) {
+function Stat({ label, value, highlight }) {
   return (
     <div className="stat">
       <span className="stat-label">{label}</span>
-      <span className="stat-value">{value}</span>
+      <span className="stat-value" style={highlight ? { color: "#22c55e" } : undefined}>
+        {value}
+      </span>
     </div>
   );
 }
