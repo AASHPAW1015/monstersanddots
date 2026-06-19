@@ -273,6 +273,8 @@ export function usePathLearner(canvasRef) {
         intervalRef.current = null;
         setReached(finished);
         setPhaseBoth("done");
+        candidateRaysRef.current = [];
+        draw();
       }
     }, STEP_MS);
   }, [reset, expandOnce, draw]);
