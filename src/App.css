@@ -1,46 +1,132 @@
+/* ---------------------------------------------------------------------------
+   Theme tokens. Neutral zinc greys + a single emerald accent. No blue/purple.
+   [data-theme] is set on <html> by ThemeContext.
+--------------------------------------------------------------------------- */
+:root,
+[data-theme="dark"] {
+  --bg: #09090b;
+  --surface: #18181b;
+  --surface-2: #212126;
+  --border: #2a2a30;
+  --text: #fafafa;
+  --text-muted: #a1a1aa;
+  --accent: #10b981;
+  --accent-hover: #34d399;
+  --accent-fg: #052e1f;
+  --danger: #ef4444;
+  --canvas-bg: #18181b;
+  --dot: #2c2c33;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.4), 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+[data-theme="light"] {
+  --bg: #f4f4f5;
+  --surface: #ffffff;
+  --surface-2: #fafafa;
+  --border: #e4e4e7;
+  --text: #18181b;
+  --text-muted: #71717a;
+  --accent: #059669;
+  --accent-hover: #047857;
+  --accent-fg: #ffffff;
+  --danger: #dc2626;
+  --canvas-bg: #f4f4f5;
+  --dot: #d4d4d8;
+  --shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
 * {
   box-sizing: border-box;
 }
 
 .app {
   min-height: 100vh;
-  color: #e2e8f0;
-  font-family: system-ui, -apple-system, sans-serif;
+  color: var(--text);
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
 }
 
+/* ---- Top bar ------------------------------------------------------------- */
 .topbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 20px;
-  background: #1e293b;
-  border-bottom: 1px solid #334155;
+  gap: 16px;
+  padding: 14px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-mark {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--accent);
 }
 
 .topbar h1 {
-  font-size: 18px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   margin: 0;
 }
 
+.topbar nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
 .topbar nav a {
-  color: #818cf8;
-  margin-left: 16px;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 500;
   text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background 0.15s, color 0.15s;
 }
 
 .topbar nav a:hover {
-  text-decoration: underline;
+  color: var(--text);
+  background: var(--surface-2);
 }
 
+.topbar nav a.active {
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.theme-toggle {
+  margin-left: 12px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 12px;
+}
+
+.theme-toggle:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+
+/* ---- Layout -------------------------------------------------------------- */
 .layout {
   display: flex;
   gap: 20px;
-  padding: 20px;
+  padding: 24px;
   align-items: flex-start;
 }
 
 .sidebar {
-  flex: 0 0 280px;
+  flex: 0 0 300px;
 }
 
 .content {
@@ -50,102 +136,128 @@
 }
 
 .panel {
-  background: #1e293b;
-  border: 1px solid #334155;
-  border-radius: 8px;
-  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: var(--shadow);
 }
 
+/* ---- Buttons ------------------------------------------------------------- */
 .action-strip {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 button {
-  background: #818cf8;
-  color: #0f172a;
+  background: var(--accent);
+  color: var(--accent-fg);
   border: none;
-  border-radius: 6px;
-  padding: 8px 12px;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
+  transition: background 0.15s, opacity 0.15s;
 }
 
 button:hover {
-  background: #a5b4fc;
+  background: var(--accent-hover);
 }
 
 button:disabled {
-  background: #475569;
-  color: #94a3b8;
+  background: var(--surface-2);
+  color: var(--text-muted);
   cursor: not-allowed;
+  border: 1px solid var(--border);
 }
 
+/* ---- Hyperparameter form ------------------------------------------------- */
 .form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 16px;
 }
 
 .form label {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  font-size: 14px;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
 }
 
 .form input[type="range"] {
   width: 100%;
+  accent-color: var(--accent);
 }
 
+/* ---- HUD / stats --------------------------------------------------------- */
 .hud {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 16px;
 }
 
 .stat {
   display: flex;
   flex-direction: column;
-  background: #0f172a;
-  border-radius: 6px;
-  padding: 10px;
+  gap: 4px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 14px;
 }
 
 .stat-label {
   font-size: 11px;
-  color: #94a3b8;
+  color: var(--text-muted);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.04em;
+  font-weight: 600;
 }
 
 .stat-value {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 700;
-  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
 }
 
 .muted {
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
+/* ---- Canvas stage -------------------------------------------------------- */
+.stage canvas {
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow);
+}
+
+/* ---- History table ------------------------------------------------------- */
 .history-table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 8px;
+  margin-top: 10px;
 }
 
 .history-table th,
 .history-table td {
-  border: 1px solid #334155;
-  padding: 6px 10px;
+  border-bottom: 1px solid var(--border);
+  padding: 8px 12px;
   text-align: left;
   font-size: 13px;
+  font-variant-numeric: tabular-nums;
 }
 
 .history-table th {
-  background: #0f172a;
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.04em;
 }

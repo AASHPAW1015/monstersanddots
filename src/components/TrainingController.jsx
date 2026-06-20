@@ -1,5 +1,9 @@
 import { useSimContext } from "../context/SimulationContext";
 
+// TrainingController — the left sidebar: the four control buttons
+// (Start / Pause / Skip / Purge) plus the three hyperparameter sliders.
+// The button handlers are passed down from useSimulation; the slider values
+// live in context and are updated via the SET_PARAM action.
 export function TrainingController({
   isRunning,
   isPaused,
@@ -10,10 +14,12 @@ export function TrainingController({
 }) {
   const { popSize, mutationRate, genDuration, dispatch } = useSimContext();
 
+  // One helper to push any slider change into the reducer.
   const setParam = (key, value) => dispatch({ type: "SET_PARAM", key, value });
 
   return (
     <div className="panel">
+      {/* Control buttons. Disabled states keep the running/paused logic sane. */}
       <div className="action-strip">
         <button onClick={startSimulation} disabled={isRunning && !isPaused}>
           Start Evolutionary Cycles
@@ -25,6 +31,7 @@ export function TrainingController({
         <button onClick={resetSimulation}>Purge Gene Pools</button>
       </div>
 
+      {/* Hyperparameter sliders — each writes straight back to context. */}
       <div className="form">
         <label>
           Population Capacity: {popSize}
@@ -35,6 +42,7 @@ export function TrainingController({
         </label>
         <label>
           Mutation Rate: {(mutationRate * 100).toFixed(0)}%
+          {/* slider is 0–100 (%), stored as a 0–1 fraction */}
           <input
             type="range" min="0" max="100" value={mutationRate * 100}
             onChange={(e) => setParam("mutationRate", +e.target.value / 100)}

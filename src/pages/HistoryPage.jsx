@@ -1,5 +1,7 @@
-import { Link } from "react-router-dom";
+import { TopBar } from "../components/TopBar";
 
+// HistoryPage — reads the last run straight from localStorage (written each
+// generation by useSimulation) and shows the per-generation fitness table.
 export default function HistoryPage() {
   const generation = localStorage.getItem("generation");
   const eliteDNA = localStorage.getItem("eliteDNA");
@@ -7,14 +9,7 @@ export default function HistoryPage() {
 
   return (
     <div className="app">
-      <header className="topbar">
-        <h1>Run History</h1>
-        <nav>
-          <Link to="/">Simulation</Link>
-          <Link to="/path">Path Learning</Link>
-          <Link to="/history">History</Link>
-        </nav>
-      </header>
+      <TopBar title="Run History" />
       <main className="layout">
         <section className="content">
           {!generation ? (

@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import { Link } from "react-router-dom";
 import { usePathLearner } from "../hooks/usePathLearner";
+import { TopBar } from "../components/TopBar";
 import { WIDTH, HEIGHT } from "../lib/constants";
 
 // Greedy frontier path-learner: rays fan out from a point, the one that lands
@@ -13,14 +13,7 @@ export default function PathLearningPage() {
 
   return (
     <div className="app">
-      <header className="topbar">
-        <h1>Path Learning</h1>
-        <nav>
-          <Link to="/">Simulation</Link>
-          <Link to="/path">Path Learning</Link>
-          <Link to="/history">History</Link>
-        </nav>
-      </header>
+      <TopBar title="Path Learning" />
 
       <main className="layout">
         <aside className="sidebar">
@@ -58,10 +51,11 @@ export default function PathLearningPage() {
             </div>
 
             <p className="muted" style={{ fontSize: 13, lineHeight: 1.5 }}>
-              Rays spread from the frontier (yellow). The closest-to-target endpoint
-              becomes the next origin, building the indigo path. Hit <b>Play Path</b>{" "}
-              to watch the smoothed route run start → target. Obstacles & target are
-              shared with the Simulation tab — draw walls there to change the world.
+              Rays spread from the frontier (amber marker). The closest-to-target
+              endpoint becomes the next origin, building the route. Hit{" "}
+              <b>Play Path</b> to watch the smoothed path run start → target.
+              Obstacles & target are shared with the Simulation tab — draw walls
+              there to change the world.
             </p>
           </div>
         </aside>
@@ -72,7 +66,7 @@ export default function PathLearningPage() {
               ref={canvasRef}
               width={WIDTH}
               height={HEIGHT}
-              style={{ display: "block", background: "#0f172a", borderRadius: 8 }}
+              style={{ display: "block", background: "var(--canvas-bg)", borderRadius: 8 }}
             />
           </div>
         </section>

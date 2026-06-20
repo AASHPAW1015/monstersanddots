@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
 import { useSimContext } from "../context/SimulationContext";
+import { useTheme } from "../context/ThemeContext";
 import { useCanvas } from "./useCanvas";
 import { useEvolution } from "./useEvolution";
 import { DNA_LENGTH } from "../lib/constants";
@@ -29,7 +30,8 @@ export function useSimulation(canvasRef) {
     historyRef.current = stats.history;
   });
 
-  const { draw, step } = useCanvas(canvasRef, population, obstacles, target, frameRef);
+  const { palette } = useTheme();
+  const { draw, step } = useCanvas(canvasRef, population, obstacles, target, frameRef, palette);
   const { runGeneration } = useEvolution();
 
   const endGeneration = useCallback(() => {

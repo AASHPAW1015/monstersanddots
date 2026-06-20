@@ -4,17 +4,17 @@ import { WIDTH, HEIGHT, SPEED, TARGET_RADIUS, DOT_RADIUS } from "../lib/constant
 const ACCEL = SPEED * 0.4;
 const DRAG  = 0.92;
 
-export function useCanvas(canvasRef, population, obstacles, target, frameRef) {
+export function useCanvas(canvasRef, population, obstacles, target, frameRef, palette) {
   const draw = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
 
-    ctx.fillStyle = "#334155";
+    ctx.fillStyle = palette.obstacle;
     obstacles.forEach((o) => ctx.fillRect(o.x, o.y, o.w, o.h));
 
-    ctx.fillStyle = "#ef4444";
+    ctx.fillStyle = palette.target;
     ctx.beginPath();
     ctx.arc(target.x, target.y, TARGET_RADIUS, 0, Math.PI * 2);
     ctx.fill();
@@ -31,18 +31,18 @@ export function useCanvas(canvasRef, population, obstacles, target, frameRef) {
     population.forEach((c) => {
       const isElite = c === elite;
       ctx.fillStyle = c.reached
-        ? "#22c55e"
+        ? palette.reached
         : c.dead
-        ? "#475569"
+        ? palette.dead
         : isElite
-        ? "#fbbf24"
-        : "#818cf8";
+        ? palette.elite
+        : palette.creature;
       const r = isElite ? DOT_RADIUS + 2 : DOT_RADIUS;
       ctx.beginPath();
       ctx.arc(c.x, c.y, r, 0, Math.PI * 2);
       ctx.fill();
     });
-  }, [canvasRef, population, obstacles, target]);
+  }, [canvasRef, population, obstacles, target, palette]);
 
   const step = useCallback(() => {
     const frame = frameRef.current;

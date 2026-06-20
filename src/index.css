@@ -1,4 +1,16 @@
+html {
+  /* Dotted-diary background: an evenly-spaced grid of faint dots, like
+     bullet-journal paper. The opaque panels float on top of it. */
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--dot) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+  background-position: -1px -1px;
+  transition: background-color 0.2s ease;
+}
+
 body {
   margin: 0;
-  background: #0f172a;
+  background: transparent;
+  color: var(--text);
+  transition: color 0.2s ease;
 }

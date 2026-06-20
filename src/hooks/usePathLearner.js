@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useSimContext } from "../context/SimulationContext";
+import { useTheme } from "../context/ThemeContext";
 import { WIDTH, HEIGHT, START, TARGET_RADIUS } from "../lib/constants";
 
 // ---- Tuning -----------------------------------------------------------------
@@ -80,6 +81,7 @@ function smoothPath(pts) {
 
 export function usePathLearner(canvasRef) {
   const { obstacles, target } = useSimContext();
+  const { palette } = useTheme();
 
   // Live state for the HUD.
   const [phase, setPhase] = useState("idle"); // idle | searching | done | animating
@@ -109,16 +111,16 @@ export function usePathLearner(canvasRef) {
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
 
-    ctx.fillStyle = "#0f172a";
+    ctx.fillStyle = palette.canvasBg;
     ctx.fillRect(0, 0, WIDTH, HEIGHT);
 
     // obstacles
-    ctx.fillStyle = "#334155";
+    ctx.fillStyle = palette.obstacle;
     obstacles.forEach((o) => ctx.fillRect(o.x, o.y, o.w, o.h));
 
     // candidate rays (the "spread" of the current step)
     if (phaseRef.current === "searching") {
-      ctx.strokeStyle = "rgba(129,140,248,0.18)";
+      ctx.strokeStyle = palette.ray;
       ctx.lineWidth = 1;
       candidateRaysRef.current.forEach((r) => {
         ctx.beginPath();
@@ -131,14 +133,14 @@ export function usePathLearner(canvasRef) {
     // discovered path so far
     const path = pathRef.current;
     if (path.length > 1) {
-      ctx.strokeStyle = "#818cf8";
+      ctx.strokeStyle = palette.path;
       ctx.lineWidth = 3;
       ctx.beginPath();
       ctx.moveTo(path[0].x, path[0].y);
       for (let i = 1; i < path.length; i++) ctx.lineTo(path[i].x, path[i].y);
       ctx.stroke();
       // waypoint nodes
-      ctx.fillStyle = "#a5b4fc";
+      ctx.fillStyle = palette.pathNode;
       path.forEach((p) => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
@@ -147,13 +149,13 @@ export function usePathLearner(canvasRef) {
     }
 
     // start node
-    ctx.fillStyle = "#22d3ee";
+    ctx.fillStyle = palette.start;
     ctx.beginPath();
     ctx.arc(START.x, START.y, 6, 0, Math.PI * 2);
     ctx.fill();
 
     // target
-    ctx.fillStyle = "#ef4444";
+    ctx.fillStyle = palette.target;
     ctx.beginPath();
     ctx.arc(target.x, target.y, TARGET_RADIUS, 0, Math.PI * 2);
     ctx.fill();
@@ -161,7 +163,7 @@ export function usePathLearner(canvasRef) {
     // current frontier marker (while searching)
     if (phaseRef.current === "searching") {
       const f = frontierRef.current;
-      ctx.fillStyle = "#fbbf24";
+      ctx.fillStyle = palette.frontier;
       ctx.beginPath();
       ctx.arc(f.x, f.y, 5, 0, Math.PI * 2);
       ctx.fill();
@@ -172,8 +174,8 @@ export function usePathLearner(canvasRef) {
       const smooth = smoothRef.current;
       if (smooth.length) {
         const idx = Math.min(animIndexRef.current, smooth.length - 1);
-        // travelled trail in green
-        ctx.strokeStyle = "#22c55e";
+        // travelled trail
+        ctx.strokeStyle = palette.trail;
         ctx.lineWidth = 4;
         ctx.beginPath();
         ctx.moveTo(smooth[0].x, smooth[0].y);
@@ -181,13 +183,13 @@ export function usePathLearner(canvasRef) {
         ctx.stroke();
         // the dot
         const p = smooth[idx];
-        ctx.fillStyle = "#4ade80";
+        ctx.fillStyle = palette.traveller;
         ctx.beginPath();
         ctx.arc(p.x, p.y, 7, 0, Math.PI * 2);
         ctx.fill();
       }
     }
-  }, [canvasRef, obstacles, target]);
+  }, [canvasRef, obstacles, target, palette]);
 
   // ---- One greedy expansion step -------------------------------------------
   const expandOnce = useCallback(() => {

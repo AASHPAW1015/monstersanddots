@@ -1,24 +1,20 @@
 import { useRef } from "react";
-import { Link } from "react-router-dom";
 import { useSimulation } from "../hooks/useSimulation";
+import { TopBar } from "../components/TopBar";
 import { TrainingController } from "../components/TrainingController";
 import { SimulationCanvas } from "../components/SimulationCanvas";
 import { EvolutionStats } from "../components/EvolutionStats";
 
+// SimulationPage — the main V1 screen. Owns the single canvas ref and the
+// useSimulation hook (which drives the one rAF loop), then wires its handlers
+// and stats into the sidebar, canvas and HUD.
 export default function SimulationPage() {
   const canvasRef = useRef(null);
   const sim = useSimulation(canvasRef);
 
   return (
     <div className="app">
-      <header className="topbar">
-        <h1>Genetic Algorithm Simulator</h1>
-        <nav>
-          <Link to="/">Simulation</Link>
-          <Link to="/path">Path Learning</Link>
-          <Link to="/history">History</Link>
-        </nav>
-      </header>
+      <TopBar title="Genetic Algorithm Simulator" />
       <main className="layout">
         <aside className="sidebar">
           <TrainingController
